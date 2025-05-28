@@ -1,0 +1,28 @@
+{% extends 'main/layout.html' %}
+
+{% block title %}logUp{% endblock %}
+
+
+{% block content %}
+
+    <h1 class="logInTitle">Log in</h1>
+
+    <form class="logInForm" method="POST" action="">
+
+        {% csrf_token %}
+
+        <input type="text" name="userName" placeholder="Enter yor name">
+
+        <input type="password" name="userPass">
+
+        <input type="submit" value="Log In">
+
+    </form>
+
+    {% if error %}
+        <p style="font-size: 1.2em; color:red; text-align: center;">
+            {{error}}
+        </p>
+    {% endif %}
+
+{% endblock %}

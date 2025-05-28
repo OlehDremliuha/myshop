@@ -1,0 +1,32 @@
+{% extends 'main/layout.html' %}
+
+{% block title %}Add Product{% endblock %}
+
+
+{% block content %}
+
+    <h1 class="logInTitle">Create new product</h1>
+
+    <form class="productForm" method="POST" action="" enctype="multipart/form-data">
+
+        {% csrf_token %}
+
+        <input type="text" placeholder="Enter product name" name="name">
+
+        <textarea name="description" placeholder="Enter description"></textarea>
+
+        <input type="text" name="price">
+
+        <input type="file" name="img">
+
+        <input type="submit" value="Add">
+
+    </form>
+
+    {% if error %}
+        <p style="font-size: 1.2em; color:red; text-align: center;">
+            {{error}}
+        </p>
+    {% endif %}
+
+{% endblock %}

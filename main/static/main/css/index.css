@@ -1,0 +1,101 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    min-height: 100vh;
+    background-color: rgb(11, 200, 200);
+}
+
+
+/* header styles */
+
+header{
+    width: 100%;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    border-bottom: solid 1px #fff;
+    justify-content: space-between;
+    padding: 0px 50px;
+}
+
+header .logo, nav a{
+    text-decoration: none;
+    color: #fff;
+}
+
+header .logo{
+    font-size: 2em;
+    font-weight: 800;
+}
+
+
+nav a{
+    font-size: 1.1em;
+    margin: 0px 30px;
+    position: relative;
+}
+
+.menuItem::before{
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 0px;
+    height: 2px;
+    background-color: #fff;
+}
+
+.menuItem:hover::before{
+    width: 100%;
+    transition: width .5s ease;
+}
+
+
+
+/* log up form styles */
+
+.logUpTitle, .logInTitle{
+    text-align: center;
+    margin-top: 50px;
+    text-transform: uppercase;
+    color: #fff;
+}
+
+.logUpForm, .logInForm{
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 100px auto;
+    box-shadow: 1px 1px 10px #00000022;
+    padding: 100px 10px;
+    border-radius: 5px;
+}
+
+.logUpForm input::placeholder, .logInForm input::placeholder{
+    color: #fff;
+}
+
+.logUpForm input, .logInForm input{
+    font-size: 1.1em;
+    width: 60%;
+    height: 30px;
+    margin-top: 20px;
+    padding: 5px;
+    outline: none;
+    background-color: rgb(11, 200, 200) ;
+    color: #fff;
+    border: none;
+    border-bottom: solid 1px #fff;
+}
+
+.logUpForm input[type=submit], .logInForm input[type=submit]{
+    width: 20%;
+    border: solid 1px #fff;
+    border-radius: 10px;
+    cursor: pointer;
+}
