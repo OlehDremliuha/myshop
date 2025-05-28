@@ -1,0 +1,50 @@
+{% extends 'main/layout.html' %}
+
+{% block title %}{{product.name}}{% endblock %}
+
+
+{% block content %}
+    <h1>{{product.name}}</h1>
+
+    <img src="{{product.img.url}}" width="400px" height="450px">
+
+    <p>{{product.description}}</p>
+
+    <span>{{product.price}}$</span>
+
+    {% if user.is_authenticated %}
+    <form class="comentForm" action="{% url 'addComent' product.id %}" method="POST"> 
+        {% csrf_token %}
+        <textarea name="comentText">
+
+        </textarea>
+        <input type="submit" value="Add Coment">
+    </form>
+    {% endif %}
+
+    <div class="comentsBlock">
+
+        {% if comments %}
+
+            {% for coment in comments %}
+                <br>
+                <div class="commentCard">
+
+                    <p>{{coment.userId}}</p>
+                    <p>{{coment.comentText}}</p>
+                    <span>{{coment.date}}</span>
+
+                </div>
+                <br>
+
+            {% endfor %}
+
+        {% else %}
+
+            <p>No one comment found</p>
+
+        {% endif %}
+
+    </div>
+
+{% endblock %}

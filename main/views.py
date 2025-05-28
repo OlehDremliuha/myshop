@@ -2,12 +2,17 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-from .models import Product
+from .models import Product, Comment
+import datetime
+
+userId = None
 
 def getMain(request):
     return render(request, "main/index.html")
 
 def logIn(request):
+
+    global userId
 
     if request.method == "POST":
 
@@ -15,6 +20,7 @@ def logIn(request):
         userPassword=request.POST['userPass']
 
         user = authenticate(request, username=userName, password=userPassword)
+        userId = user.id
 
         if user is not None:
             login(request, user)
@@ -26,6 +32,8 @@ def logIn(request):
 
 
 def logUp(request):
+
+    global userId
 
     if request.method == "POST":
 
@@ -40,6 +48,8 @@ def logUp(request):
 
             user = authenticate(request, username=userName, password=userPassword)
 
+            userId = user.id
+
             if user is not None:
                 login(request, user)
             return redirect('main')
@@ -51,6 +61,9 @@ def logUp(request):
 
 @login_required
 def logOut(request):
+
+    global userId
+    userId = None
     logout(request)
     return redirect('main')
 
@@ -86,6 +99,29 @@ def shop(request):
     products = Product.objects.all()
     
     return render(request, 'main/shop.html', {"products": products})
+
+
+def getProduct(request, id):
+
+    product = Product.objects.filter(id=id).first()
+    comments = Comment.objects.filter(productId=product).order_by('-date')
+
+    return render(request, 'main/product.html', {"product": product, "comments": comments})
+
+
+@login_required
+def addComent(request, id):
+
+    global userId
+    prod = Product.objects.filter(id=id).first()
+    userObj = User.objects.filter(id=userId).first()
+    comentText = request.POST["comentText"]
+    date = datetime.datetime.now()
+
+    coment = Comment(productId=prod, userId=userObj, comentText=comentText, date=date)
+    coment.save()
+
+    return redirect("product", id)
 
 
 #Реалізувати Авторизацію та регістрацію
