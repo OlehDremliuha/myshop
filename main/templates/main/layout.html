@@ -19,7 +19,9 @@
                 <a href="{% url 'main' %}" class="menuItem">Home</a>
                 <a href="{% url 'shop' %}" class="menuItem">Shop</a>
             {% if user.is_authenticated %}
+                {% if user.is_staff %}
                 <a href="{% url 'addProduct' %}" class="menuItem">Add product</a>
+                {% endif %}
                 <a href="{% url 'logOut' %}" class="menuItem">Log out</a>
             {% else %}
                 <a href="{% url 'logIn' %}" class="menuItem">Log in</a>

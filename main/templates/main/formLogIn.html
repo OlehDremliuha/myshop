@@ -19,6 +19,8 @@
 
     </form>
 
+    <a href="{% url 'password_reset' %}"><i>Forgot Password?</i></a>
+
     {% if error %}
         <p style="font-size: 1.2em; color:red; text-align: center;">
             {{error}}
