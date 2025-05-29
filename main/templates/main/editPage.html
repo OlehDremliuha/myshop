@@ -1,0 +1,42 @@
+{% extends 'main/layout.html' %}
+
+{% block title %}{{userProfile.username}}{% endblock %}
+
+
+{% block content %}
+
+    <form action="" method="POST">
+        {% csrf_token %}
+
+        <input type="text" name="username" value={{userProfile.username}}>
+
+        <input type="submit" value="Change name"> 
+        
+    </form>
+
+    <form action="" method="POST"> 
+        {% csrf_token %}
+
+        <input type="email" name="email" value={{userProfile.email}}>
+
+        <input type="submit" value="Change email"> 
+
+    </form>
+
+    <form action="" method="POST"> 
+        {% csrf_token %}
+
+        <input type="password" name="password">
+
+        <input type="password" name="password2">
+
+        <input type="submit" value="Change password"> 
+
+    </form>
+
+
+    {% if error %}
+        <p style="color:red">{{erorr}}</p>
+    {% endif %}
+
+{% endblock %}

@@ -17,12 +17,13 @@
         
         <nav>
                 <a href="{% url 'main' %}" class="menuItem">Home</a>
-                <a href="{% url 'shop' %}" class="menuItem">Shop</a>
+                <a href="{% url 'shop' 1 %}" class="menuItem">Shop</a>
             {% if user.is_authenticated %}
                 {% if user.is_staff %}
                 <a href="{% url 'addProduct' %}" class="menuItem">Add product</a>
                 {% endif %}
                 <a href="{% url 'logOut' %}" class="menuItem">Log out</a>
+                <a href="{% url 'profile' user.id %}" class="menuItem">Accaunt</a>
             {% else %}
                 <a href="{% url 'logIn' %}" class="menuItem">Log in</a>
                 <a href="{% url 'logUp' %}" class="menuItem">Log up</a>

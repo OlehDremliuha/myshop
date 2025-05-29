@@ -30,7 +30,7 @@
                 <br>
                 <div class="commentCard">
 
-                    <p>{{coment.userId}}</p>
+                    <a href="{% url 'profile' coment.userId.id %}">{{coment.userId}}</a>
                     <p>{{coment.comentText}}</p>
                     <span>{{coment.date}}</span>
 

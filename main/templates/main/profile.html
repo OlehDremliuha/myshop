@@ -1,0 +1,16 @@
+{% extends 'main/layout.html' %}
+
+{% block title %}{{userProfile.username}}{% endblock %}
+
+
+{% block content %}
+
+    <h1>{{userProfile.username}}</h1>
+
+    {% if user.is_authenticated %}
+        {% if  userProfile.id == user.id %}
+            <a href="{% url 'edit' userProfile.id %}">EDIT</a>
+        {% endif %}
+    {% endif %}
+
+{% endblock %}

@@ -7,8 +7,11 @@ from .models import Product, Comment
 import datetime
 from django.contrib.auth.views import PasswordResetView
 from django.contrib.messages.views import SuccessMessageMixin
+import math
 
 userId = None
+currentPage = 1
+countBlock = 4
 
 def getMain(request):
     return render(request, "main/index.html")
@@ -103,11 +106,22 @@ def addProduct(request):
         return redirect('main')
 
 
-def shop(request):
+def shop(request, page):
 
-    products = Product.objects.all()
+    global currentPage
+    global countBlock
+
+    currentPage = page
+
+    count = Product.objects.all().count()
+    if (count/countBlock > 1):
+        pages = []
+        for item in range(math.ceil(count/countBlock)):
+            pages.append({"number": item + 1, "url": "shop/" + str(item + 1)})
     
-    return render(request, 'main/shop.html', {"products": products})
+
+    products = Product.objects.all()[countBlock * (currentPage-1):countBlock * currentPage]
+    return render(request, 'main/shop.html', {"products": products, "pages": pages})
 
 
 def getProduct(request, id):
@@ -135,6 +149,54 @@ def addComent(request, id):
 
 
 
+def getProfile(request, id):
+
+    userProfile = User.objects.get(id=id)
+
+    return render(request, 'main/profile.html', {"userProfile": userProfile})
+
+
+@login_required
+def editProfile(request, id):
+
+    userProfile = User.objects.get(id=id)
+
+    if request.method == "POST":
+
+        if ("username" in request.POST.keys()):
+
+            userName = request.POST["username"]
+            userProfile.username=userName
+            userProfile.save()
+            return redirect("profile", id)
+
+        if ("email" in request.POST.keys()):
+
+            userEmail = request.POST["email"]
+            userProfile.email=userEmail
+            userProfile.save()
+            return redirect("profile", id)
+        
+
+        if ("password" in request.POST.keys()):
+
+            userPass = request.POST["password"]
+            userPass2 = request.POST["password2"]
+            if userPass == userPass2:
+                userProfile.set_password(userPass)
+                userProfile.save()
+                login(request, userProfile)
+                return redirect("profile", id)
+            else:
+                error = "Password is not confirm"
+                return render(request, 'main/editPage.html', {"userProfile": userProfile, "error": error})
+        
+
+    userProfile = User.objects.get(id=id)
+
+    return render(request, 'main/editPage.html', {"userProfile": userProfile})
+
+
 
 
 
@@ -148,6 +210,10 @@ class ResetPasswordView(SuccessMessageMixin, PasswordResetView):
                       " If you don't receive an email, " \
                       "please make sure you've entered the address you registered with, and check your spam folder."
     success_url = reverse_lazy('main')
+
+
+
+
 
 
 #Реалізувати Авторизацію та регістрацію
