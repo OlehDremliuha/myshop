@@ -22,3 +22,16 @@ class Comment(models.Model):
 
     def __str__(self):
         return self.comentText
+    
+
+
+class Basket(models.Model):
+
+    userId = models.ForeignKey(User, models.CASCADE)
+
+
+
+class ProductBasket(models.Model):
+
+    productId = models.ForeignKey(Product, models.CASCADE)
+    basketId = models.ForeignKey(Basket, models.CASCADE)

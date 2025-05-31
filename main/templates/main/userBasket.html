@@ -1,0 +1,30 @@
+{% extends 'main/layout.html' %}
+
+{% block title %}Basket{% endblock %}
+
+
+{% block content %}
+
+    <h1>Basket</h1>
+
+    {% if warning %}
+        <h2>{{warnig}}</h2>
+    {% else %}
+    <div class="productsWrapper">
+        {% for product in products %}
+            <div class="card" style="width: 18rem;">
+                <img src={{product.productId.img.url}} class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">{{product.productId.name}}</h5>
+                    <p class="card-text">{{product.productId.price}}</p>
+                    <a href="{% url 'deleteProductBasket' basketId product.productId.id %}" class="btn btn-warning">Delete product</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <span class="totalPrice">Total price: {{totalPrice}} $</span>
+    <div class="clear"></div>
+    <a href="{% url 'pay' basketId %}" class="btn btn-primary mybtn">Pay</a>
+    {% endif %}
+
+{% endblock %}

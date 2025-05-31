@@ -3,7 +3,7 @@ from django.urls import reverse_lazy
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required, permission_required
-from .models import Product, Comment
+from .models import Product, Comment, Basket, ProductBasket
 import datetime
 from django.contrib.auth.views import PasswordResetView
 from django.contrib.messages.views import SuccessMessageMixin
@@ -196,6 +196,74 @@ def editProfile(request, id):
 
     return render(request, 'main/editPage.html', {"userProfile": userProfile})
 
+
+
+@login_required
+def getBasket(request, id):
+
+    user = User.objects.get(id=id)
+
+    try:
+        basket = Basket.objects.get(userId=user)
+        products = ProductBasket.objects.filter(basketId=basket)
+        totalPrice = 0
+        for item in products:
+            totalPrice+=item.productId.price
+        return render(request, 'main/userBasket.html', {"products": products, "basketId": basket.id, "totalPrice": totalPrice})
+    except:
+        warning = "No one product in your basket"
+        return render(request, 'main/userBasket.html', {"warning": warning})
+
+
+@login_required
+def addToBasket(request, id):
+    
+    user = User.objects.get(id=userId)
+
+    try: 
+
+        basket = Basket.objects.get(userId=user)
+
+    except:
+
+        basket = Basket(userId=user)
+        basket.save()
+
+    product = Product.objects.get(id=id)
+     
+    count = ProductBasket.objects.filter(basketId=basket, productId=product).count()
+
+    if count >= 1:
+
+        comments = Comment.objects.filter(productId=product).order_by('-date')
+        return render(request, 'main/product.html', {"product": product, "comments": comments, "error": True})
+
+    else:
+        productBasket = ProductBasket(basketId=basket, productId=product)
+        productBasket.save()
+
+    return redirect('product', id)
+
+@login_required
+def deleteProductBasket(request, basketId, productId):
+
+
+    basket = Basket.objects.get(id=basketId)
+    product = Product.objects.get(id=productId)
+    productBasket = ProductBasket.objects.get(basketId=basket, productId=product)
+    productBasket.delete()
+
+    products = ProductBasket.objects.filter(basketId=basket)
+    return redirect('userBasket', basketId)
+
+
+@login_required
+def pay(request, basketId):
+
+    basket = Basket.objects.get(id=basketId)
+    basket.delete()
+
+    return redirect('main')
 
 
 

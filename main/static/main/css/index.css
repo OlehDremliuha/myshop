@@ -167,3 +167,30 @@ main{
     font-size: 1.2em;
     color: #333;
 }
+
+
+
+
+
+
+
+
+
+/* Basket styles */
+
+
+.totalPrice{
+    margin: 100px 0px;
+    margin-bottom: 20px;
+    font-size: 1.2em;
+    font-weight: 800;
+    float: right;
+}
+
+.clear{
+    clear: both;
+}
+
+.mybtn{
+    float: right;
+}

@@ -12,6 +12,13 @@
 
     <span>{{product.price}}$</span>
 
+    <br><br><br>
+    {% if user.is_authenticated %}
+        <a href="{% url 'addToBasket' product.id %}" class="btn btn-primary">Add to basket</a>
+    {% endif %}
+
+    <br><br>
+
     {% if user.is_authenticated %}
     <form class="comentForm" action="{% url 'addComent' product.id %}" method="POST"> 
         {% csrf_token %}
@@ -47,4 +54,11 @@
 
     </div>
 
+    {% if error %}
+        <script>
+
+            alert("This product alredy in your basket")
+
+        </script>
+    {% endif %}
 {% endblock %}

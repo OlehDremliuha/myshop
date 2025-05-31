@@ -22,8 +22,9 @@
                 {% if user.is_staff %}
                 <a href="{% url 'addProduct' %}" class="menuItem">Add product</a>
                 {% endif %}
-                <a href="{% url 'logOut' %}" class="menuItem">Log out</a>
                 <a href="{% url 'profile' user.id %}" class="menuItem">Accaunt</a>
+                <a href="{% url 'userBasket' user.id %}" class="menuItem">Basket</a>
+                <a href="{% url 'logOut' %}" class="menuItem">Log out</a>
             {% else %}
                 <a href="{% url 'logIn' %}" class="menuItem">Log in</a>
                 <a href="{% url 'logUp' %}" class="menuItem">Log up</a>
