@@ -5,6 +5,16 @@
 
 
 {% block content %}
+
+    <div class="categoryFilter">
+
+            <a href="{% url 'shop' 1 %}">All</a>
+        {% for cat in categories %}
+            <a href="{% url 'getCategory' cat.id 1 %}">{{cat.title}}</a>
+        {% endfor %}
+
+    </div>
+
 <h1>SHOP PAGE</h1>
 
     {% if products %}
@@ -32,14 +42,32 @@
 
     {% endif %}
 
-    {% if pages %}
 
-        <div   class="paginationBlock">
+    {% if categoryId %}
 
-            {% for page in pages %}
-                <a href="{% url 'shop' page.number %}" class="pageBlock">{{page.number}}</a>
-            {% endfor %}
-        </div>
+        {% if pages %}
+
+            <div   class="paginationBlock">
+
+                {% for page in pages %}
+                    <a href="{% url 'getCategory' categoryId page.number %}" class="pageBlock">{{page.number}}</a>
+                {% endfor %}
+            </div>
+
+        {% endif %}
+
+    {% else %}
+
+        {% if pages %}
+
+            <div   class="paginationBlock">
+
+                {% for page in pages %}
+                    <a href="{% url 'shop' page.number %}" class="pageBlock">{{page.number}}</a>
+                {% endfor %}
+            </div>
+
+        {% endif %}
 
     {% endif %}
 

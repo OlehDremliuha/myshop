@@ -3,7 +3,7 @@ from django.urls import reverse_lazy
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required, permission_required
-from .models import Product, Comment, Basket, ProductBasket
+from .models import Product, Comment, Basket, ProductBasket, Category
 import datetime
 from django.contrib.auth.views import PasswordResetView
 from django.contrib.messages.views import SuccessMessageMixin
@@ -77,6 +77,7 @@ def logOut(request):
 
 @login_required
 def addProduct(request):
+    categories = Category.objects.all()
 
     if request.user.is_staff:
 
@@ -87,19 +88,20 @@ def addProduct(request):
             try:
                 price = float(request.POST['price'])
             except:
-                return render(request, 'main/addProductForm.html', {'error': 'Price must be number'})
+                return render(request, 'main/addProductForm.html', {'error': 'Price must be number', "categories": categories})
             try:
-                img = request.FILES['img']
+                img = request.FILES['img']  
             except:
-                return render(request, 'main/addProductForm.html', {'error': 'File problem'})
+                return render(request, 'main/addProductForm.html', {'error': 'File problem', "categories": categories})
             
-            product = Product(name=name, description=description, price=price, img=img)
+            category = Category.objects.get(title=request.POST["category"])
+            product = Product(name=name, description=description, price=price, img=img, categoryId=category)
             product.save()
 
             return redirect('main')
             
 
-        return render(request, 'main/addProductForm.html')
+        return render(request, 'main/addProductForm.html', {"categories": categories})
     
     else:
 
@@ -111,6 +113,8 @@ def shop(request, page):
     global currentPage
     global countBlock
 
+    categories = Category.objects.all()
+
     currentPage = page
 
     count = Product.objects.all().count()
@@ -118,10 +122,32 @@ def shop(request, page):
         pages = []
         for item in range(math.ceil(count/countBlock)):
             pages.append({"number": item + 1, "url": "shop/" + str(item + 1)})
-    
+    else:
+        pages = 0
 
     products = Product.objects.all()[countBlock * (currentPage-1):countBlock * currentPage]
-    return render(request, 'main/shop.html', {"products": products, "pages": pages})
+    return render(request, 'main/shop.html', {"products": products, "pages": pages, "categories": categories})
+
+
+def getCategory(request, catId, page):
+
+    global currentPage
+
+    categories = Category.objects.all()
+    currentPage = page
+
+    category = Category.objects.get(id=catId)
+    count = Product.objects.filter(categoryId=category).count()
+    if (count/countBlock > 1):
+        pages = []
+        for item in range(math.ceil(count/countBlock)):
+            pages.append({"number": item + 1, "url": "shop/" + str(item + 1)})
+    else:
+        pages = 0
+
+    
+    products = Product.objects.filter(categoryId=category)[countBlock * (currentPage-1):countBlock * currentPage]
+    return render(request, 'main/shop.html', {"products": products, "pages": pages, "categories": categories, "categoryId": catId})
 
 
 def getProduct(request, id):
@@ -208,7 +234,7 @@ def getBasket(request, id):
         products = ProductBasket.objects.filter(basketId=basket)
         totalPrice = 0
         for item in products:
-            totalPrice+=item.productId.price
+            totalPrice+=item.productId.price * item.productCount
         return render(request, 'main/userBasket.html', {"products": products, "basketId": basket.id, "totalPrice": totalPrice})
     except:
         warning = "No one product in your basket"
@@ -221,25 +247,20 @@ def addToBasket(request, id):
     user = User.objects.get(id=userId)
 
     try: 
-
         basket = Basket.objects.get(userId=user)
-
     except:
-
         basket = Basket(userId=user)
         basket.save()
 
-    product = Product.objects.get(id=id)
-     
+    product = Product.objects.get(id=id)     
     count = ProductBasket.objects.filter(basketId=basket, productId=product).count()
 
     if count >= 1:
-
         comments = Comment.objects.filter(productId=product).order_by('-date')
         return render(request, 'main/product.html', {"product": product, "comments": comments, "error": True})
 
     else:
-        productBasket = ProductBasket(basketId=basket, productId=product)
+        productBasket = ProductBasket(basketId=basket, productId=product, productCount=1)
         productBasket.save()
 
     return redirect('product', id)
@@ -265,6 +286,22 @@ def pay(request, basketId):
 
     return redirect('main')
 
+
+@login_required
+def changeProductCount(request, basketId, productId):
+    basket = Basket.objects.get(id=basketId)
+    try:
+        count = int(request.POST["productCount"])
+    except:
+        return redirect('userBasket', basket.userId.id)
+    product = ProductBasket.objects.get(productId=productId, basketId=basketId)
+
+    if count <= 0 or count == product.productCount:
+        return redirect('userBasket', basket.userId.id)
+    else:
+        product.productCount = count
+        product.save()
+        return redirect('userBasket', basket.userId.id)
 
 
 

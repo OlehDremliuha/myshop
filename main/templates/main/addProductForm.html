@@ -15,6 +15,14 @@
 
         <textarea name="description" placeholder="Enter description"></textarea>
 
+        <select name="category">
+
+            {% for cat in categories %}
+                <option>{{cat.title}}</option>
+            {% endfor %}
+
+        </select>
+
         <input type="text" name="price">
 
         <input type="file" name="img">

@@ -1,8 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+class Category(models.Model):
+    title = models.TextField()
+
 class Product(models.Model):
 
+    categoryId = models.ForeignKey(Category, models.CASCADE)
     name=models.TextField(max_length=50)
     img=models.ImageField(upload_to='', null=True, blank=True)
     description=models.TextField()
@@ -35,3 +39,5 @@ class ProductBasket(models.Model):
 
     productId = models.ForeignKey(Product, models.CASCADE)
     basketId = models.ForeignKey(Basket, models.CASCADE)
+    productCount = models.IntegerField()
+

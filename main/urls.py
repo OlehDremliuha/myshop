@@ -11,6 +11,7 @@ urlpatterns = [
     path('logOut/', views.logOut, name="logOut"),
     path('addProduct/', views.addProduct, name='addProduct'),
     path('shop/<int:page>', views.shop, name="shop"),
+    path('categories/<int:catId>/<int:page>', views.getCategory, name="getCategory"),
     path('product/<int:id>', views.getProduct, name="product"),
     path('addComent/<int:id>', views.addComent, name="addComent"),
     path('profile/<int:id>/', views.getProfile, name="profile"),
@@ -19,6 +20,7 @@ urlpatterns = [
     path('product/<int:id>/addToBasket/', views.addToBasket, name="addToBasket"),
     path('user/basket/<int:basketId>/delete/<int:productId>', views.deleteProductBasket, name="deleteProductBasket"),
     path('user/basket/<int:basketId>/pay/', views.pay, name="pay"),
+    path('user/basket/<int:basketId>/changCount/<int:productId>', views.changeProductCount, name="changeCount"),
 
     # Password Reset path
     path('password_reset/', auth_views.PasswordResetView.as_view(), name='password_reset'),
